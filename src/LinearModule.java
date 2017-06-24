@@ -1,4 +1,4 @@
-public abstract class AudioModule
+public abstract class LinearModule
 {
     abstract double getSample();
     /**

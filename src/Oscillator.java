@@ -1,4 +1,4 @@
-public abstract class Oscillator extends AudioModule
+public abstract class Oscillator extends LinearModule
 {
     public static final double defaultFrequency=440;
     private double frequency=defaultFrequency;

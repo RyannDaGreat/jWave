@@ -1,9 +1,10 @@
-public abstract class Filter extends AudioModule
+public abstract class Filter extends LinearModule
 {
-    public AudioModule input;
-    public Filter(AudioModule input)
+    public LinearModule input;
+    public Filter(LinearModule input)
     {
         this.input=input;
     }
+
 
 }
