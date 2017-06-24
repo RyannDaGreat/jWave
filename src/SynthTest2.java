@@ -7,20 +7,7 @@ import javax.sound.sampled.SourceDataLine;
 public class SynthTest2
 {
     protected static final int SAMPLE_RATE=44100;//16*1024;
-    public static byte[] createSinWaveBuffer(double freq,int ms)
-    {
-        int samples=ms*SAMPLE_RATE/1000;
-        double[] output=new double[samples];
-        //
-        double period=SAMPLE_RATE/freq;
-        for(int i=0;i<output.length;i++)
-        {
-            double angle=2.0*Math.PI*i/period;
-            output[i]=Math.sin(angle);
-        }
-        return rOutpost.doublesTo32BitAudioBytes(output);
-    }
-    static final int bitsPerSample=16;//8⟷Byte，16⟷Short，32⟷Int
+    static final int bitsPerSample=16;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     static final AudioFormat af=new AudioFormat(SAMPLE_RATE,bitsPerSample,1,true,true);
     static SourceDataLine line;
     static
@@ -38,14 +25,18 @@ public class SynthTest2
     }
     public static void main(String[] args) throws LineUnavailableException
     {
-        for(double freq=400;freq<=800;)
+        while(true)
         {
-            byte[] toneBuffer=createSinWaveBuffer(freq,50);
-            int count=line.write(toneBuffer,0,toneBuffer.length);
-            System.out.println(count);
-            freq+=20;
+            Sawtooth saw=new Sawtooth();
+            for(double pitch=-24;pitch<=24;pitch++)
+            {
+                saw.setPitch(pitch);
+                int count=line.write(saw.get16BitBuffer(SAMPLE_RATE/2,SAMPLE_RATE),0,SAMPLE_RATE/2);
+                System.out.println(count);
+            }
+            r.scan("Enter");
         }
-        line.drain();
-        line.close();
+        // line.drain();
+        // line.close();
     }
 }

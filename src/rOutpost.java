@@ -81,14 +81,14 @@ public class rOutpost//To be merged with the r class in the future...
         return doubleRangeToByte(x,-1,1);
     }
     @SuppressWarnings("PointlessBitwiseExpression")
-    public final static byte[]doublesTo32BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
+    public final static byte[]doublesTo16BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
     {
         //For my Modulin Synth attempt in Java
         //https://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
-        ByteBuffer bytes = ByteBuffer.allocate(4*monoAudio.length);
+        ByteBuffer bytes = ByteBuffer.allocate(2*monoAudio.length);
         bytes.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
         for(double sample:monoAudio)
-            bytes.putInt(audioRangeToInt(sample));
+            bytes.putShort(audioRangeToShort(sample));
         return bytes.array();
     }
     // public final static byte[]doublesTo32BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
@@ -258,6 +258,10 @@ class r
     public interface stringToString
     {
         String f(String x);
+    }
+    public static double log(double b,double x)
+    {
+        return Math.log(x) / Math.log(b);
     }
     public static void modifyFileText(File file,stringToString mod)
     {
