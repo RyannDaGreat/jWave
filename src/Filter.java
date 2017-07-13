@@ -5,6 +5,8 @@ public abstract class Filter extends LinearModule
     {
         this.input=input;
     }
-
-
+    void timeStep(double deltaTime)
+    {
+        input.timeStep(deltaTime);
+    }
 }

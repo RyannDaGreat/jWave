@@ -2,7 +2,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-
 @SuppressWarnings("WeakerAccess")
 public class SynthTest
 {
@@ -23,18 +22,15 @@ public class SynthTest
             e.printStackTrace();
         }
     }
-    public static void main(String[] args) throws LineUnavailableException
+    public static void main(String[] args) throws LineUnavailableException, InterruptedException
     {
-        while(true)
+        Sawtooth saw=new Sawtooth();
+        Legato filteredSaw=new Legato(saw);
+        filteredSaw.setAlphaPerSecond(0.025);
+        for(double pitch=-48;pitch<=0;pitch++)
         {
-            Sawtooth saw=new Sawtooth();
-            for(double pitch=-24;pitch<=24;pitch++)
-            {
-                saw.setPitch(pitch);
-                int count=line.write(saw.get16BitBuffer(SAMPLE_RATE/2,SAMPLE_RATE),0,SAMPLE_RATE/2);
-                System.out.println(count);
-            }
-            r.scan("Enter");
+            saw.setPitch(pitch);
+            line.write(filteredSaw.get16BitBuffer(SAMPLE_RATE/2,SAMPLE_RATE),0,SAMPLE_RATE/2);
         }
         // line.drain();
         // line.close();
