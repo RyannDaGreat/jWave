@@ -5,7 +5,7 @@ import javax.sound.sampled.SourceDataLine;
 @SuppressWarnings("WeakerAccess")
 public class SynthTest
 {
-    protected static final int SAMPLE_RATE=44100;//16*1024;
+    protected static final int SAMPLE_RATE=441000;//16*1024;
     static final int bitsPerSample=16;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     static final AudioFormat af=new AudioFormat(SAMPLE_RATE,bitsPerSample,1,true,true);
     static SourceDataLine line;
@@ -14,7 +14,7 @@ public class SynthTest
         try
         {
             line=AudioSystem.getSourceDataLine(af);
-            line.open(af,SAMPLE_RATE);
+            line.open(af,1024);
             line.start();
         }
         catch(LineUnavailableException e)
@@ -24,13 +24,22 @@ public class SynthTest
     }
     public static void main(String[] args) throws LineUnavailableException, InterruptedException
     {
-        Sawtooth saw=new Sawtooth();
-        Legato filteredSaw=new Legato(saw);
-        filteredSaw.setAlphaPerSecond(0.025);
-        for(double pitch=-48;pitch<=0;pitch++)
+        // Sawtooth saw=new Sawtooth();
+        WaveCubeReader saw=new WaveCubeReader();
+        saw.setX(.3);
+        // Legato filteredSaw=new Legato(saw);
+        // filteredSaw.setAlphaPerSecond(0.025);
+        saw.setPitch(-24);
+        // for(double pitch=-10;pitch<=100;pitch++)
+        r.tic();
+        while(true)
         {
-            saw.setPitch(pitch);
-            line.write(filteredSaw.get16BitBuffer(SAMPLE_RATE/2,SAMPLE_RATE),0,SAMPLE_RATE/2);
+            saw.setPitch((Math.cos(r.toc()*.25)+1)*35-24);
+            // System.out.println(saw.x);
+            int numberOfSamples=1024;
+            // r.delay(1/SAMPLE_RATE);
+           line.write(saw.get16BitBuffer(numberOfSamples,SAMPLE_RATE),0,numberOfSamples*2);//numberOfSamples*2 because 16 bit buffer
+            // line.write(saw.get16BitBuffer(numberOfSamples,SAMPLE_RATE),0,numberOfSamples*2);//numberOfSamples*2 because 16 bit buffer
         }
         // line.drain();
         // line.close();

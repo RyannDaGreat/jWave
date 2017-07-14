@@ -19,4 +19,8 @@ public abstract class LinearModule
     {
         return rOutpost.doublesTo16BitAudioBytes(getDoubleBuffer(numberOfSamples,sampleRate));
     }
+    public byte[]get8BitBuffer(int numberOfSamples,double sampleRate)
+    {
+        return rOutpost.doublesTo8BitAudioBytes(getDoubleBuffer(numberOfSamples,sampleRate));
+    }
 }
