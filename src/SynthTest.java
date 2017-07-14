@@ -5,8 +5,8 @@ import javax.sound.sampled.SourceDataLine;
 @SuppressWarnings("WeakerAccess")
 public class SynthTest
 {
-    protected static final int SAMPLE_RATE=44100;//16*1024;
-    static final int bufferSize=1024;//Determines latency! Lower -> Faster response but glitchier audio
+    protected static final int SAMPLE_RATE=441000;//16*1024;
+    static final int bufferSize=SAMPLE_RATE/42;//44100⟶1024 and 441000⟶10240Determines latency! Lower -> Faster response but glitchier audio
     static final int bitsPerSample=16;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     static final AudioFormat af=new AudioFormat(SAMPLE_RATE,bitsPerSample,1,true,true);
     static SourceDataLine line;
