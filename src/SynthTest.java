@@ -6,14 +6,14 @@ import javax.sound.sampled.SourceDataLine;
 public class SynthTest
 {
     protected static final int SAMPLE_RATE=441000;//16*1024;
-    static final int bufferSize=SAMPLE_RATE/42;//44100⟶1024 and 441000⟶10240Determines latency! Lower -> Faster response but glitchier audio
-    static final int bitsPerSample=16;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
-    static final AudioFormat af=new AudioFormat(SAMPLE_RATE,bitsPerSample,1,true,true);
+    static final int bufferSize=SAMPLE_RATE/43+1;//⟵Magic i stumbled on by trial/error and 44100/1024≈43.06  // 44100⟶1024 and 441000⟶10240. Determines latency! Lower -> Faster response but glitchier audio
+    static final int bitsPerSample=2*8;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     static SourceDataLine line;
     static
     {
         try
         {
+            final AudioFormat af=new AudioFormat(SAMPLE_RATE,bitsPerSample,1,true,true);
             line=AudioSystem.getSourceDataLine(af);
             line.open(af,bufferSize);
             line.start();
@@ -35,7 +35,7 @@ public class SynthTest
         r.tic();
         while(true)
         {
-            saw.setPitch((Math.cos(r.toc()*.25)+1)*35-24);
+            saw.setPitch(Math.sin(r.toc()*.25)*5+Math.sin(r.toc()*.3)*Math.sin(r.toc()*.3)*(Math.acos(Math.cos(r.toc()*50)))*.5);
             // System.out.println(saw.x);
             int numberOfSamples=bufferSize/bitsPerSample*8;
             // r.delay(1/SAMPLE_RATE);
