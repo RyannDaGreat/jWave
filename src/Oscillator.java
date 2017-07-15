@@ -1,24 +1,12 @@
-public abstract class Oscillator extends LinearModule
+public abstract class Oscillator extends Temporal
 {
-    public static final double defaultFrequency=440;
-    private double frequency=defaultFrequency;
-    /**
-     * @param frequency In Hz
-     */
-    public void setFrequency(double frequency)
+    public LinearModule inputFrequency=new Constant(440);
+    private double ↈλ;//Between 0 and 1
+    public final double getSample(long Δↈsamples)
     {
-        this.frequency=frequency;
+        ↈλ+=inputFrequency.getSample()*Δↈsamples/SynthEngine.SAMPLE_RATE;
+        ↈλ%=1;
+        return getSample(ↈλ);
     }
-    public double getFrequency()
-    {
-        return frequency;
-    }
-    public void setPitch(double semitones)
-    {
-        setFrequency(defaultFrequency*Math.pow(2,semitones/12));
-    }
-    public double getPitch()
-    {
-        return 12*r.log(2,frequency/defaultFrequency);
-    }
+    public abstract double getSample(double ↈλ);
 }
