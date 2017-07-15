@@ -57,6 +57,33 @@ public class WaveCube
         }
         return out;
     }
+    public static double[][] loadRGBWaveTable(String imagePath) throws IOException//The difference is that this one has 3-byte precision on every double, whilst the other one just has one byte of precision
+    {
+        File file=new File(imagePath);
+        BufferedImage img=ImageIO.read(file);
+        int width=img.getWidth();
+        int height=img.getHeight();
+        int[][] imgArr=new int[width][height];
+        Raster raster=img.getData();
+        for(int i=0;i<width;i++)
+        {
+            for(int j=0;j<height;j++)
+            {
+                imgArr[i][j]=raster.getSample(i,j,0);
+            }
+        }
+        imgArr=transposeMatrix(imgArr);//To match python's output
+        //Convert it to a double array of doubles ∈ [0,1]:
+        double[][] out=new double[imgArr.length][imgArr[0].length];
+        for(int i=0;i<out.length;i++)
+        {
+            for(int j=0;j<out[0].length;j++)
+            {
+                out[i][j]=Math.min(1,(imgArr[i][j]-127)/127d);
+            }
+        }
+        return out;
+    }
     public static double[][][] loadWaveCube(String pngPathPrefixWithoutNumberOrExtension,int numberOfImages) throws IOException
     {
         double[][] initTable=loadWaveTable(pngPathPrefixWithoutNumberOrExtension+0+".png");
