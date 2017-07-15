@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"WeakerAccess","FinalStaticMethod"})
 public class rOutpost//To be merged with the r class in the future...
 {
+    public final static double π=3.14159265359;
+    public final static double τ=2*π;
     public final static double linterp(double x,double...y)
     {
         assert (int)x<=y.length-1:"linterp error: x would exceed max index of y. x="+x+" and y.length="+y.length;
