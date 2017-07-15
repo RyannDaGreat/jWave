@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
@@ -6,6 +7,7 @@ import java.io.IOException;
 @SuppressWarnings("SuspiciousNameCombination")
 public class WaveCube
 {
+    //region For main modulin oscillator
     public static double[][] transposeMatrix(double[][] m)
     {
         double[][] temp=new double[m[0].length][m.length];
@@ -31,33 +33,6 @@ public class WaveCube
         return temp;
     }
     public static double[][] loadWaveTable(String imagePath) throws IOException
-    {
-        File file=new File(imagePath);
-        BufferedImage img=ImageIO.read(file);
-        int width=img.getWidth();
-        int height=img.getHeight();
-        int[][] imgArr=new int[width][height];
-        Raster raster=img.getData();
-        for(int i=0;i<width;i++)
-        {
-            for(int j=0;j<height;j++)
-            {
-                imgArr[i][j]=raster.getSample(i,j,0);
-            }
-        }
-        imgArr=transposeMatrix(imgArr);//To match python's output
-        //Convert it to a double array of doubles ∈ [0,1]:
-        double[][] out=new double[imgArr.length][imgArr[0].length];
-        for(int i=0;i<out.length;i++)
-        {
-            for(int j=0;j<out[0].length;j++)
-            {
-                out[i][j]=Math.min(1,(imgArr[i][j]-127)/127d);
-            }
-        }
-        return out;
-    }
-    public static double[][] loadRGBWaveTable(String imagePath) throws IOException//The difference is that this one has 3-byte precision on every double, whilst the other one just has one byte of precision
     {
         File file=new File(imagePath);
         BufferedImage img=ImageIO.read(file);
@@ -166,13 +141,45 @@ public class WaveCube
             System.out.println("WARNING: Failed to load the wave cube!");
         }
     }
-    public static void main(String[] args) throws IOException
+    //endregion
+    public static void main(String[] args) throws IOException, UnsupportedAudioFileException
     {
         // Color[][] colors=loadPixelsFromImage(new File("/Users/Ryan/Desktop/scrunge.png.png"));
         // System.out.println("Color[0][0] = "+colors[0][0].getRGBComponents(null)[0]);
         System.out.println(java.util.Arrays.deepToString(loadWaveTable("/Users/Ryan/Desktop/scrunge.png.png")));
+        double[][] doubles=waveTable("/Users/Ryan/Desktop/ReverbKernels/FromEffector/Kernel",23);
+        System.out.println(doubles[0].length);
         // System.out.println(java.util.Arrays.deepToString(doubles));
     }
+    //region For reverb effect
+    public static double[][]waveTable(String filePathPrefix,int numberOfWaves) throws IOException, UnsupportedAudioFileException
+    {
+        double[][]out=new double[numberOfWaves][];
+        for(int i=0;i<numberOfWaves;i++)
+        {
+            out[i]=new WaveFile(new File(filePathPrefix+numberOfWaves+".wav")).asDoubleArray();
+        }
+        return out;
+    }
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public static double interpolateWaveTable(double[][]waveTable,double x,double y)//x and y ∈ [0,1)
+    {
+        x%=1;
+        y%=1;
+        int xl=waveTable.length;
+        int yl=waveTable[0].length;
+        x*=xl;
+        y*=yl;
+        int xf=(int)r.floor(x);
+        int yf=(int)r.floor(y);
+        int yc=(int)r.ceil(y);
+        int xc=(int)r.ceil(x);
+        double x0=rOutpost.lerp(x,xf,xc,waveTable[xf%xl][yf%yl],waveTable[xc%xl][yf%yl]);
+        double x1=rOutpost.lerp(x,xf,xc,waveTable[xf%xl][yc%yl],waveTable[xc%xl][yc%yl]);
+        double xy=rOutpost.lerp(y,yf,yc,x0,x1);
+        return xy;
+    }
+    //endregion
 }
 //region Python code to make a set of wave-table images (used to make a wavecube)
 // from r import *

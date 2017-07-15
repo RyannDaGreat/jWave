@@ -28,8 +28,8 @@ public class SynthTest
         // Sawtooth saw=new Sawtooth();
         WaveCubeReader saw=new WaveCubeReader();
         saw.setX(.3);
-        // Legato filteredSaw=new Legato(saw);
-        // filteredSaw.setAlphaPerSecond(0.025);
+        Legato filteredSaw=new Legato(saw);
+        filteredSaw.setAlphaPerSecond(0.025);
         saw.setPitch(-24);
         // for(double pitch=-10;pitch<=100;pitch++)
         r.tic();
