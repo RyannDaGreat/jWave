@@ -4,19 +4,19 @@ public class Reverb extends Filter
 {
     public double reverbMix=.5;
     public double originalMix=.5;
-
+    public double xMod=.5;
 
     private int sampleRate;
     private double[][]waveTable;
     private int xl,yl;
-    private double sampleLength;//In seconds of reverberation time
+    private double reverbSampleTime;//In seconds of reverberation time
     public Reverb(LinearModule input,double[][]waveTable,int sampleRate)
     {
         super(input);
         this.waveTable=waveTable;
         xl=waveTable.length;//The x-mod
         yl=waveTable[0].length;//The wave itself
-        sampleLength=sampleRate*yl;
+        reverbSampleTime=sampleRate*(yl-1);//-1 for hypothetical safety..dunno if its nessecary but it cant hurt right
     }
     private double getWaveTableSample(double timeInSeconds,double x)
     {
@@ -41,23 +41,29 @@ public class Reverb extends Filter
         input.timeStep(deltaTime);
         inputPreviousSample=inputCurrentSample;
         inputCurrentSample=input.getSample();
-        inputTimeDeltas.add(new InputTimeDelta(inputCurrentSample-inputPreviousSample,deltaTime));
+        inputTimeDeltas.add(0,new InputTimeDelta(inputCurrentSample-inputPreviousSample,deltaTime));
     }
     double getSample()
     {
-        double out=0;
-        out+=inputCurrentSample*originalMix;
-        double time=0;
+        double reverbComponent=0;
+        double totalTime=0;
         for(InputTimeDelta inputTimeDelta : inputTimeDeltas)
         {
-            if()
-            time+=inputTimeDelta.timeDelta;
+            if(totalTime<reverbSampleTime)
+            {
+                reverbComponent+=getWaveTableSample(totalTime,xMod)*inputTimeDelta.inputDelta;
+                totalTime+=inputTimeDelta.timeDelta;
+            }
+            else
+            {
+                inputTimeDeltas.remove(inputTimeDelta);
+            }
         }
+        return reverbComponent*reverbMix+originalMix*inputCurrentSample;
     }
     public static void main(String[]ih
                            ) throws IOException
     {
 
-        new Reverb(new Sawtooth(),WaveCube.loadWaveTable("/Users/Ryan/Desktop/RyanCourseSiteGeneratorThirdRecovery/Digilin/FromEffector/EffectorReverb.png"),44100);
     }
 }
