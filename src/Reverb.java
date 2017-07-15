@@ -4,19 +4,21 @@ public class Reverb extends Filter
 {
     public double reverbMix=.5;
     public double originalMix=.5;
-    public double xMod=.5;
-
+    public double xMod=1;
     private int sampleRate;
-    private double[][]waveTable;
-    private int xl,yl;
+    private double[][] waveTable;
+    private int xl, yl;
     private double reverbSampleTime;//In seconds of reverberation time
-    public Reverb(LinearModule input,double[][]waveTable,int sampleRate)
+    public Reverb(LinearModule input,double[][] waveTable,int sampleRate)
     {
         super(input);
         this.waveTable=waveTable;
         xl=waveTable.length;//The x-mod
         yl=waveTable[0].length;//The wave itself
-        reverbSampleTime=sampleRate*(yl-1);//-1 for hypothetical safety..dunno if its nessecary but it cant hurt right
+        reverbSampleTime=(yl-1d)/sampleRate;//-1 for hypothetical safety..dunno if its nessecary but it cant hurt right
+        System.out.println("rst="+reverbSampleTime);
+        System.out.println("yl="+yl);
+        System.out.println("sr="+sampleRate);
     }
     private double getWaveTableSample(double timeInSeconds,double x)
     {
@@ -24,16 +26,17 @@ public class Reverb extends Filter
     }
     double inputPreviousSample;
     double inputCurrentSample;
-
-    ArrayList<InputTimeDelta> inputTimeDeltas;
+    ArrayList<InputTimeDelta> inputTimeDeltas=new ArrayList<>();
     class InputTimeDelta
     {
         double inputDelta;
         double timeDelta;
+        long timeDeltaPicoseconds;
         InputTimeDelta(double inputDelta,double timeDelta)
         {
             this.inputDelta=inputDelta;
             this.timeDelta=timeDelta;
+            this.timeDeltaPicoseconds=(long)(timeDelta*10e12);
         }
     }
     void timeStep(double deltaTime)
@@ -46,24 +49,36 @@ public class Reverb extends Filter
     double getSample()
     {
         double reverbComponent=0;
-        double totalTime=0;
+        long totalPicoseconds=0;
+        ArrayList<InputTimeDelta> inputTimeDeltasToBeRemoved=new ArrayList<>();
         for(InputTimeDelta inputTimeDelta : inputTimeDeltas)
         {
-            if(totalTime<reverbSampleTime)
+            if(totalPicoseconds/10e12<reverbSampleTime)
             {
-                reverbComponent+=getWaveTableSample(totalTime,xMod)*inputTimeDelta.inputDelta;
-                totalTime+=inputTimeDelta.timeDelta;
+                reverbComponent+=getWaveTableSample(totalPicoseconds/10e12,xMod)*inputTimeDelta.inputDelta;
+                totalPicoseconds+=inputTimeDelta.timeDeltaPicoseconds;
             }
             else
             {
-                inputTimeDeltas.remove(inputTimeDelta);
+                System.out.println("chee");
+                inputTimeDeltasToBeRemoved.add(inputTimeDelta);
             }
         }
-        return reverbComponent*reverbMix+originalMix*inputCurrentSample;
+        if(r.toc()>1)
+        {
+            System.out.println(totalPicoseconds);
+            r.ptoc();
+            r.tic();
+        }
+        for(InputTimeDelta inputTimeDelta : inputTimeDeltasToBeRemoved)
+        {
+            inputTimeDeltas.remove(inputTimeDelta);
+        }
+        // return reverbComponent*reverbMix+originalMix*inputCurrentSample;
+        return inputCurrentSample;
     }
-    public static void main(String[]ih
+    public static void main(String[] ih
                            ) throws IOException
     {
-
     }
 }
