@@ -1,3 +1,4 @@
+import javax.sound.sampled.Line;
 public abstract class Oscillator extends Temporal
 {
     public LinearModule inputFrequency=new Constant(440);

@@ -1,27 +1,24 @@
 import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess","Duplicates"})
 public class SynthTest
 {
     public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
     {
-        Oscillator saw=new Sinusoid();
-        // WaveCubeReader saw=new WaveCubeReader();
-        // saw.setX(.3);
-        // Legato filteredSaw=new Legato(saw);
-        // Reverb reverbedSaw=new Reverb(saw,WaveCube.loadWaveTable("/Users/Ryan/Desktop/RyanCourseSiteGeneratorThirdRecovery/Digilin/FromEffector/EffectorReverb.png"),44100);
-        // filteredSaw.setAlphaPerSecond(0.025);
-        // saw.setPitch(-24);
-        // for(double pitch=-10;pitch<=100;pitch++)
-        Frequency sawFrequency=new Frequency();
-        saw.inputFrequency=sawFrequency;
-        SampleRate sr=new SampleRate(saw,new Frequency(800));
-        SynthEngine.setOutputModule(sr);
-        while(true)
-        {
-            sawFrequency.setPitch(Math.sin(r.toc()*.25)*5+Math.sin(r.toc()*.3)*Math.sin(r.toc()*.3)*(Math.acos(Math.cos(r.toc()*50)))*.5);
-        }
-        // line.drain();
-        // line.close();
+        WaveCube wc=WaveCube.modulinOscillator();
+        WaveCube wc2=WaveCube.modulinOscillator();
+        Square s=new Square();
+        s.inputFrequency=new Constant(1);
+        wc.inputFrequency=new Constant(100);
+        LinearFunction gate=new LinearFunction(s,x->x/2+.5);
+        wc2.inputFrequency=new Frequency(441);
+        BilinearFunction m=BilinearFunction.multiply(wc,gate);
+        Reverb r=Reverb.effector(m);
+        SynthEngine.setOutputModule(r);
+        // Sinusoid sin=new Sinusoid();
+        // wc.inputFrequency=new Constant(110);
+        // sin.inputFrequency=new LinearFunction(LinearFunction.pitchToFrequency(new GetTime()),x->x*.1);
+        // wc.xModInput=new LinearFunction(sin,x->x*x/2.4);//LinearFunction.pitchToFrequency(BilinearFunction.multiply(sin,BilinearFunction.add(sin,new Constant(-10))));
+        // SynthEngine.setOutputModule(wc);
     }
 }

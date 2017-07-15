@@ -56,13 +56,27 @@ public class rOutpost//To be merged with the r class in the future...
     }
     public final static double lerp(double x,double xmin,double xmax,double ymin,double ymax)
     {
+        if (ymin==ymax)
+            return ymax;
+        if(xmin==xmax)
+            return (ymin+ymax)/2;
+        // if(x==xmin)
+        //     return ymin;
+        // if(x==xmax)
+        //     return ymax;
+
         assert xmin<=xmax;
         assert ymin<=ymax;
         x-=xmin;//∴ x>=0 (If x was min before, now x is 0)
         x/=xmax-xmin;//Divide x by its range
         x*=ymax-ymin;//Multiply x by int's range
         x+=ymin;
+        // System.out.println(x);
         return x;
+    }
+    public final static double blend(double x,double y,double α)
+    {
+        return x*(1-α)+y*α;
     }
     public final static double clampedLerp(double x,double xmin,double xmax,double ymin,double ymax)//Originally created for audio: ℝ ∈［-1，1］⟺ ℤ ∈ [﹣2³¹，2³¹﹣1］
     {
@@ -107,8 +121,10 @@ public class rOutpost//To be merged with the r class in the future...
         //https://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
         ByteBuffer bytes = ByteBuffer.allocate(2*monoAudio.length);
         bytes.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-        for(double sample:monoAudio)
+        for(double sample : monoAudio)
+        {
             bytes.putShort(audioRangeToShort(sample));
+        }
         return bytes.array();
     }
     public final static byte[]doublesTo8BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
@@ -117,8 +133,10 @@ public class rOutpost//To be merged with the r class in the future...
         //https://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
         ByteBuffer bytes = ByteBuffer.allocate(monoAudio.length);
         bytes.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-        for(double sample:monoAudio)
+        for(double sample : monoAudio)
+        {
             bytes.put(audioRangeToByte(sample));
+        }
         return bytes.array();
     }
     // public final static byte[]doublesTo32BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped

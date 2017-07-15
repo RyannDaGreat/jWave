@@ -18,4 +18,26 @@ public class BilinearFunction extends LinearModule
     {
         return function.apply(input1.getSample(),input2.getSample());
     }
+    //region Toolbox
+    public static BilinearFunction multiply(LinearModule input1,LinearModule input2)
+    {
+        return new BilinearFunction(input1,input2,(x,y)->x*y);
+    }
+    public static BilinearFunction add(LinearModule input1,LinearModule input2)
+    {
+        return new BilinearFunction(input1,input2,(x,y)->x+y);
+    }
+    public static BilinearFunction subtract(LinearModule input1,LinearModule input2)
+    {
+        return new BilinearFunction(input1,input2,(x,y)->x-y);
+    }
+    public static BilinearFunction divide(LinearModule input1,LinearModule input2)//Returns 0 if divide by 0
+    {
+        return new BilinearFunction(input1,input2,(x,y)->y==0?0:x/y);
+    }
+    public static BilinearFunction pow(LinearModule input1,LinearModule input2)//Returns 0 if divide by 0
+    {
+        return new BilinearFunction(input1,input2,Math::pow);
+    }
+    //endregion
 }

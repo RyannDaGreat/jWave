@@ -16,4 +16,12 @@ public class LinearFunction extends LinearModule
     {
         return function.apply(input.getSample());
     }
+    public static LinearFunction pitchToFrequency(LinearModule input)
+    {
+        return new LinearFunction(input,(ↈsemitones)->440*Math.pow(2,ↈsemitones/12));
+    }
+    public static LinearFunction frequencyToPitch(LinearModule input)
+    {
+        return new LinearFunction(input,(frequency)->12*r.log(2,frequency/440));
+    }
 }
