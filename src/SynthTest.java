@@ -5,7 +5,7 @@ public class SynthTest
 {
     public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
     {
-        Sawtooth saw=new Sawtooth();
+        Oscillator saw=new Sinusoid();
         // WaveCubeReader saw=new WaveCubeReader();
         // saw.setX(.3);
         // Legato filteredSaw=new Legato(saw);
@@ -15,7 +15,8 @@ public class SynthTest
         // for(double pitch=-10;pitch<=100;pitch++)
         Frequency sawFrequency=new Frequency();
         saw.inputFrequency=sawFrequency;
-        SynthEngine.setOutputModule(saw);
+        SampleRate sr=new SampleRate(saw,new Frequency(800));
+        SynthEngine.setOutputModule(sr);
         while(true)
         {
             sawFrequency.setPitch(Math.sin(r.toc()*.25)*5+Math.sin(r.toc()*.3)*Math.sin(r.toc()*.3)*(Math.acos(Math.cos(r.toc()*50)))*.5);
