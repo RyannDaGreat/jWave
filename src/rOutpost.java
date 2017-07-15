@@ -29,6 +29,24 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"WeakerAccess","FinalStaticMethod"})
 public class rOutpost//To be merged with the r class in the future...
 {
+    public final static double linterp(double x,double...y)
+    {
+        assert (int)x<=y.length-1:"linterp error: x would exceed max index of y. x="+x+" and y.length="+y.length;
+        assert x>=0:"linterp error: x cannot be negative (duh!). x="+x+" and y.length="+y.length;
+        int cx=(int)r.ceil(x);
+        int fx=(int)r.floor(x);
+        return lerp(x,fx,cx,y[fx],y[cx]);
+    }
+    public final static double linterpCyclic(double x,double...y)
+    {
+        int cx=(int)r.ceil(x);
+        int fx=(int)r.floor(x);
+        return lerp(x,fx,cx,y[fx%y.length],y[cx%y.length]);
+    }
+    public static double linterpClamped(double x,double...y)
+    {
+        return linterp(clamp(x,0,y.length-1),y);
+    }
     public final static double clamp(double x,double min,double max)
     {
         assert min<=max;
