@@ -3,8 +3,6 @@ public class Echo extends Filter
     private final double[] history;
     private int cursor;
     public LinearModule falloffFactor=new Constant(.5);
-    public LinearModule inputMix=new Constant(1);
-    public LinearModule echoMix=new Constant(1);
     public double getSample(long Δↈsamples)
     {
         final double inputSample=input.getSample();
@@ -13,11 +11,10 @@ public class Echo extends Filter
         {
             cursor++;
             cursor%=history.length;
-            history[cursor]=rOutpost.blend(history[cursor],inputSample,.01);
-            // history[cursor]*=falloff;
-            // history[cursor]+=inputSample;
+            history[cursor]*=falloff;
+            history[cursor]+=inputSample;
         }
-        return history[cursor]*echoMix.getSample()+(inputMix.getSample()-1)*inputSample;
+        return history[cursor];
     }
     //region Constructors
     public Echo(LinearModule input,double numberOfSeconds)

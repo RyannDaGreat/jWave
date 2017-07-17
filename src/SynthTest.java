@@ -17,13 +17,16 @@ public class SynthTest
         Phasor phasor=new Phasor(modulin,new GetTime(),new Constant(-.2));
         Portamento lowPass=new Portamento(phasor,new Constant(1e-30));
         TrilinearFunction blend=TrilinearFunction.blend(phasor,lowPass,new Constant(.8));
-        Echo echo=new Echo(blend,.051d);
-        Echo echo2=new Echo(echo,3*.051d);
-        echo2=new Echo(blend,.01);
+        // Echo echo=new Echo(blend,.051d);
+        // Echo echo2=new Echo(echo,3*.051d);
+
+        Triangle ud=new Triangle();
+        ud.inputFrequency=new Constant(.1);
+        BlendyEcho echo2=new BlendyEcho(blend,new LinearFunction(ud,x->(x+1)*.011),new Constant(.91));
         // echo2.falloffFactor=new Constant(.9);
         // LinearFunction amplify=new LinearFunction(echo,x->.2*x);
 
-        SynthEngine.setOutputModule(TrilinearFunction.blend(echo,echo2,new Constant(.5)));
+        // SynthEngine.setOutputModule(TrilinearFunction.blend(echo,echo2,new Constant(.5)));
         SynthEngine.setOutputModule(echo2);
     }
 }
