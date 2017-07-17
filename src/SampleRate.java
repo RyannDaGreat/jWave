@@ -16,13 +16,10 @@ public class SampleRate extends Filter
     {
         double sampleRate=sampleRateInHz.getSample();
         timeInPicoseconds+=1_000_000_000_000L*Δↈsamples/SynthEngine.SAMPLE_RATE;
-        if(sampleRate!=0)
+        if(sampleRate!=0&&timeInPicoseconds>=1e12/sampleRate)
         {
-            if(timeInPicoseconds>=1e12/sampleRate)
-            {
-                value=input.getSample();
-                timeInPicoseconds=0;
-            }
+            value=input.getSample();
+            timeInPicoseconds=0;
         }
         return value;
     }

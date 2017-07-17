@@ -5,20 +5,25 @@ public class SynthTest
 {
     public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
     {
-        WaveCube wc=WaveCube.modulinOscillator();
-        WaveCube wc2=WaveCube.modulinOscillator();
-        Square s=new Square();
-        s.inputFrequency=new Constant(1);
-        wc.inputFrequency=new Constant(100);
-        LinearFunction gate=new LinearFunction(s,x->x/2+.5);
-        wc2.inputFrequency=new Frequency(441);
-        BilinearFunction m=BilinearFunction.multiply(wc,gate);
-        Reverb r=Reverb.effector(m);
-        SynthEngine.setOutputModule(r);
-        // Sinusoid sin=new Sinusoid();
-        // wc.inputFrequency=new Constant(110);
-        // sin.inputFrequency=new LinearFunction(LinearFunction.pitchToFrequency(new GetTime()),x->x*.1);
-        // wc.xModInput=new LinearFunction(sin,x->x*x/2.4);//LinearFunction.pitchToFrequency(BilinearFunction.multiply(sin,BilinearFunction.add(sin,new Constant(-10))));
-        // SynthEngine.setOutputModule(wc);
+        WaveCube modulin=WaveCube.modulinOscillator();
+        modulin.xModInput=new Constant(.3);
+        Triangle triangle=new Triangle();
+        triangle.inputFrequency=new Constant(.1);
+        LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(new LinearFunction(triangle,x->x*9-8)));
+        Triangle pitchVibrato=new Triangle();
+        pitchVibrato.inputFrequency=new Constant(7);
+        pitchVibrato.inputAmplitude=new Constant(.05);
+        modulin.inputFrequency=LinearFunction.pitchToFrequency(BilinearFunction.add(new Portamento(majorScalePitchArpeggio,new Constant(.00000000000000000000001)),pitchVibrato));
+        Phasor phasor=new Phasor(modulin,new GetTime(),new Constant(-.2));
+        Portamento lowPass=new Portamento(phasor,new Constant(1e-30));
+        TrilinearFunction blend=TrilinearFunction.blend(phasor,lowPass,new Constant(.8));
+        Echo echo=new Echo(blend,.051d);
+        Echo echo2=new Echo(echo,3*.051d);
+        echo2=new Echo(blend,.01);
+        // echo2.falloffFactor=new Constant(.9);
+        // LinearFunction amplify=new LinearFunction(echo,x->.2*x);
+
+        SynthEngine.setOutputModule(TrilinearFunction.blend(echo,echo2,new Constant(.5)));
+        SynthEngine.setOutputModule(echo2);
     }
 }

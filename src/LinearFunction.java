@@ -1,7 +1,7 @@
 import java.util.function.Function;
 public class LinearFunction extends LinearModule
 {
-    LinearModule input=null;
+    public LinearModule input=null;
     private final Function<Double,Double> function;
     public LinearFunction(Function<Double,Double>function)
     {
@@ -23,5 +23,41 @@ public class LinearFunction extends LinearModule
     public static LinearFunction frequencyToPitch(LinearModule input)
     {
         return new LinearFunction(input,(frequency)->12*r.log(2,frequency/440));
+    }
+    public static LinearFunction round(LinearModule input)
+    {
+        return new LinearFunction(input,x->(double)Math.round(x));
+    }
+    public static LinearFunction floor(LinearModule input)
+    {
+        return new LinearFunction(input,Math::floor);
+    }
+    public static LinearFunction ceil(LinearModule input)
+    {
+        return new LinearFunction(input,Math::ceil);
+    }
+    public static LinearFunction sign(LinearModule input)
+    {
+        return new LinearFunction(input,Math::signum);
+    }
+    public static LinearFunction sin(LinearModule input)
+    {
+        return new LinearFunction(input,Math::sin);
+    }
+    public static LinearFunction cos(LinearModule input)
+    {
+        return new LinearFunction(input,Math::cos);
+    }
+    public static LinearFunction squared(LinearModule input)
+    {
+        return new LinearFunction(input,x->x*x);
+    }
+    public static LinearFunction noteToPitch(LinearModule input,double...fullOctaveOfSemitonesInclusive)
+    {
+        return new LinearFunction(input,x->rOutpost.linterpCyclicCumulative(x,fullOctaveOfSemitonesInclusive));
+    }
+    public static LinearFunction majorNoteToPitch(LinearModule input)
+    {
+        return noteToPitch(input,0,2,4,5,7,9,11,12);
     }
 }

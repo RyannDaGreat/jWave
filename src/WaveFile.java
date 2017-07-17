@@ -75,7 +75,7 @@ public class WaveFile
         return framesCount;
     }
     /**
-     * Returns sample (amplitude value). Note that in case of stereo samples
+     * Returns sample (phasorAmplitude value). Note that in case of stereo samples
      * go one after another. I.e. 0 - first sample of left channel, 1 - first
      * sample of the right channel, 2 - second sample of the left channel, 3 -
      * second sample of the rigth channel, etc.

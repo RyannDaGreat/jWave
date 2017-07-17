@@ -7,6 +7,7 @@ public abstract class Temporal extends LinearModule
         final long newↈSamples=SynthEngine.getCurrentↈSamples();
         if(newↈSamples!=oldↈSamples)
         {
+            assert newↈSamples>oldↈSamples:"A lot of code written in Temporal modules relies on the fact that Δↈsamples ∈ ℕ⁺  If this assertion is triggered it means that, somehow, time appears to have went backwards.";
             sample=getSample(newↈSamples-oldↈSamples);
             oldↈSamples=newↈSamples;
         }

@@ -2,7 +2,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-public class SynthEngine
+public class SynthEngine//I make the sound on the speakers. roar :}
 {
     public static final int SAMPLE_RATE=44100;
     private static long currentSampleNumber=0;

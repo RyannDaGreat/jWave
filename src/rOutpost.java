@@ -29,6 +29,10 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"WeakerAccess","FinalStaticMethod"})
 public class rOutpost//To be merged with the r class in the future...
 {
+    public static final double mod(double a,double b)//Because java's stupid and modulo can return negative numbers
+    {
+        return a < 0 ? b - (-a) % b : a % b;
+    }
     public final static double π=3.14159265359;
     public final static double τ=2*π;
     public final static double linterp(double x,double...y)
@@ -45,21 +49,51 @@ public class rOutpost//To be merged with the r class in the future...
         int fx=(int)r.floor(x);
         return lerp(x,fx,cx,y[fx%y.length],y[cx%y.length]);
     }
+    public final static double linterpCyclicCumulative(double x,double...y)
+    {
+        int l=y.length-1;
+        long f=r.floor(x/l);
+        return f*(y[l]-y[0])+linterpClamped(x-f*l,y);
+    }
+    public static void main(String[]af)
+    {
+        System.out.println(linterpCyclicCumulative(0,0,2,1));
+        System.out.println(linterpCyclicCumulative(0.5,0,2,1));
+        System.out.println(linterpCyclicCumulative(1,0,2,1));
+        System.out.println(linterpCyclicCumulative(1.5,0,2,1));
+        System.out.println(linterpCyclicCumulative(2,0,2,1));
+        System.out.println(linterpCyclicCumulative(2.5,0,2,1));
+        System.out.println(linterpCyclicCumulative(3,0,2,1));
+        System.out.println(linterpCyclicCumulative(3.5,0,2,1));
+        System.out.println(linterpCyclicCumulative(4,0,2,1));
+        System.out.println(linterpCyclicCumulative(4.5,0,2,1));
+        System.out.println(linterpCyclicCumulative(5,0,2,1));
+    }
     public static double linterpClamped(double x,double...y)
     {
         return linterp(clamp(x,0,y.length-1),y);
     }
     public final static double clamp(double x,double min,double max)
     {
-        assert min<=max;
+        // assert min<=max;
+        if(min>max)
+        {
+            double temp=max;
+            max=min;
+            min=temp;
+        }
         return x<min?min:x>max?max:x;
     }
     public final static double lerp(double x,double xmin,double xmax,double ymin,double ymax)
     {
-        if (ymin==ymax)
+        if(ymin==ymax)
+        {
             return ymax;
+        }
         if(xmin==xmax)
+        {
             return (ymin+ymax)/2;
+        }
         // if(x==xmin)
         //     return ymin;
         // if(x==xmax)

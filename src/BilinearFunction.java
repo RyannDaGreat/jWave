@@ -1,8 +1,8 @@
 import java.util.function.BiFunction;
 public class BilinearFunction extends LinearModule
 {
-    LinearModule input1=null;
-    LinearModule input2=null;
+    public LinearModule input1=null;
+    public LinearModule input2=null;
     private final BiFunction<Double,Double,Double> function;
     public BilinearFunction(BiFunction<Double,Double,Double>function)
     {

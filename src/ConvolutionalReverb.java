@@ -1,6 +1,7 @@
 import java.io.IOException;
-public class Reverb extends Filter
+public class ConvolutionalReverb extends Filter
 {
+    //WARNING: MINDFUCKINGLY SLOW!!
     //IMPORTANT: NOT INVARIANT TO SAMPLERATE RIGHT NOW!
     //IMPORTANT: REVERB ASSUMES THAT THE SAMPLERATE OF THE REVERB SAMPLE IS THE SAME AS THE SYNTH!!!
     public LinearModule reverbMix=new Constant(100);
@@ -10,7 +11,7 @@ public class Reverb extends Filter
     private int xl, yl;
     private double[] inputDeltaHistory;
     private int inputHistoryCursor=0;
-    public Reverb(LinearModule input,double[][] waveTable)
+    public ConvolutionalReverb(LinearModule input,double[][] waveTable)
     {
         super(input);
         this.waveTable=waveTable;
@@ -47,7 +48,7 @@ public class Reverb extends Filter
         // return inputCurrentSample;
         return reverbComponent;//*reverbMix.getSample()+inputCurrentSample*originalMix.getSample();
     }
-    public static Reverb effector(LinearModule input)
+    public static ConvolutionalReverb effector(LinearModule input)
     {
         double[][] doubles=null;
         try
@@ -58,6 +59,6 @@ public class Reverb extends Filter
         {
             e.printStackTrace();
         }
-        return new Reverb(input,doubles);
+        return new ConvolutionalReverb(input,doubles);
     }
 }

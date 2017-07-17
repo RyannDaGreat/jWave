@@ -79,8 +79,8 @@ public class WaveCube extends Oscillator
         x=rOutpost.clamp(x,0,xl-1);
         y=rOutpost.clamp(y,0,yl-1);
         //
-        final int cx=(int)r.ceil(x), cy=(int)r.ceil(y), cz=((int)r.ceil(z))%zl;//the %zl is here incase z==zl-.01 etc
-        final int fx=(int)r.floor(x), fy=(int)r.floor(y), fz=((int)r.floor(z))%zl;
+        final int cx=(int)r.ceil(x), cy=(int)r.ceil(y), cz=(int)rOutpost.mod((int)r.ceil(z),zl);//the %zl is here incase z==zl-.01 etc
+        final int fx=(int)r.floor(x), fy=(int)r.floor(y), fz=(int)rOutpost.mod((int)r.floor(z),zl);
         //
         final double p000=waveCube[fx][fy][fz];
         final double p001=waveCube[fx][fy][cz];
