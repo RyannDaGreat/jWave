@@ -1059,6 +1059,26 @@ public class r//To be merged with the r class in the future...
         Collections.reverse(Arrays.asList(copy));
         return copy;
     }
+    public static byte[] reversed(byte[] array)//Built for speed over clarity
+    {
+        array=array.clone();
+        byte temp;
+        int i=0,j=array.length;
+        while(i<j)
+        {
+            temp=array[i];
+            array[i++]=array[--j];
+            array[j]=temp;
+        }
+        return array;
+    }
+    public static byte[]roll(int n,byte[]array)
+    {
+        byte[]out=new byte[array.length];
+        for(int i=0;i<array.length;i++)
+            out[i]=array[mod(i+n,array.length)];
+        return out;
+    }
     public static double[] doubleArray(int... x)
     {
         double[] out=new double[x.length];
@@ -1896,6 +1916,10 @@ public class r//To be merged with the r class in the future...
     }
     //endregion
     public static final double mod(double a,double b)//Because java's stupid and modulo can return negative numbers
+    {
+        return a<0?b-(-a)%b:a%b;
+    }
+    public static final int mod(int a,int b)//Because java's stupid and modulo can return negative numbers
     {
         return a<0?b-(-a)%b:a%b;
     }
