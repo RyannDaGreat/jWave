@@ -28,6 +28,8 @@ public class SynthEngine//I make the sound on the speakers. roar :}
     private static final int bitsPerSample=2*8;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     private static SourceDataLine line;
     private static LinearModule inputModule=new Constant(0);
+    private static byte[] newBuffer;
+    private static byte[] buffer;
     static
     {
         try
@@ -38,10 +40,49 @@ public class SynthEngine//I make the sound on the speakers. roar :}
             line.start();
             new Thread(()->//Run the sound-making part of the synth on a new thread so we can control the inputs without having to worry about generating sound
                        {
-                           //noinspection InfiniteLoopStatement
-                           while(true)
+                           Thread bufferMaker=new Thread(new Runnable()
                            {
-                               line.write(get16BitBuffer(),0,bufferSize*bitsPerSample/8);
+                               synchronized public void run()
+                               {
+                                   //noinspection InfiniteLoopStatement
+                                   while(true)
+                                   {
+                                       if(newBuffer==null)
+                                       {
+                                           newBuffer=get16BitBuffer();
+                                           System.out.println("Herroo");
+                                       }
+                                       try
+                                       {
+                                           this.wait();
+                                       }
+                                       catch(InterruptedException e)
+                                       {
+                                           e.printStackTrace();
+                                       }
+                                   }
+                               }
+                           });
+                           bufferMaker.start();
+                           buffer=get16BitBuffer();
+                           //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                           synchronized(bufferMaker)
+                           {
+                               //noinspection InfiniteLoopStatement
+                               while(true)
+                               {
+                                   if(newBuffer!=null)
+                                   {
+                                       buffer=newBuffer;
+                                       newBuffer=null;
+                                   }
+                                   bufferMaker.interrupt();
+                                   line.write(buffer,0,bufferSize*bitsPerSample/8);
+                                   if(r.chance(.05))
+                                   {
+                                       r.delayInMillis(10);
+                                   }
+                               }
                            }
                        }).start();
         }
@@ -64,6 +105,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
     {
         return r.doublesTo16BitAudioBytes(getDoubleBuffer());
     }
+    @SuppressWarnings("unused")
     private static byte[] get8BitBuffer()
     {
         return r.doublesTo8BitAudioBytes(getDoubleBuffer());
