@@ -9,7 +9,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 public class SynthEngine//I make the sound on the speakers. roar :}
 {
-    public static final int SAMPLE_RATE=441000;
+    public static final int SAMPLE_RATE=44100;
     public static boolean mustMaintainTempo=true;//UserInput++ false ⟹ smoother sound but incorrect tempo. If set to true, it means if the buffers lag it will keep its tempo anyway, even though it means the buffers will be out of sync (and so it will sound noisy)
     private static long currentSampleNumber=0;
     public static long getCurrentↈSamples()
@@ -29,6 +29,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
     private static SourceDataLine line;
     private static LinearModule inputModule=new Constant(0);
     private static byte[] newBuffer;
+    private static byte[] oldBuffer;
     private static byte[] buffer;
     static
     {
@@ -55,9 +56,8 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                                        {
                                            this.wait();
                                        }
-                                       catch(InterruptedException e)
+                                       catch(InterruptedException ignored)
                                        {
-                                           // e.printStackTrace();
                                        }
                                    }
                                }
@@ -75,9 +75,13 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                                        buffer=newBuffer;
                                        newBuffer=null;
                                    }
-                                   else if(mustMaintainTempo)//We're lagging a bit - reuse the old buffer
+                                   else //We're lagging a bit - reuse the old buffer
                                    {
-                                       currentSampleNumber+=bufferSize;
+                                       if(mustMaintainTempo)
+                                       {
+                                           currentSampleNumber+=bufferSize;
+                                       }
+                                       oldBuffer=buffer;
                                    }
                                    bufferMaker.interrupt();
                                    line.write(buffer,0,bufferSize*bitsPerSample/8);
