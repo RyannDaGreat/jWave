@@ -2027,6 +2027,18 @@ public class r//To be merged with the r class in the future...
         return doubleRangeToByte(x,-1,1);
     }
     @SuppressWarnings("PointlessBitwiseExpression")
+    public final static byte[] doublesTo32BitAudioBytes(double[] monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
+    {
+        //For my Modulin Synth attempt in Java
+        //https://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
+        ByteBuffer bytes=ByteBuffer.allocate(4*monoAudio.length);
+        bytes.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
+        for(double sample : monoAudio)
+        {
+            bytes.putInt(audioRangeToInt(sample));
+        }
+        return bytes.array();
+    }
     public final static byte[] doublesTo16BitAudioBytes(double[] monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
     {
         //For my Modulin Synth attempt in Java

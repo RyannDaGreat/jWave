@@ -1,0 +1,3 @@
+Outputs: To Wave File, To Speakers
+Idea: Two sawtooths that, with phase shifting per harmonic, cause a formant when played together. These two waves are shifted in opposite directions per speaker half-way, so on their own they both sound identical. BUt if you're in the right part of the room/or the speakers are right next to each other, you might hear "HEY HELP ME IM A SPEAKER!!" or something like that
+NEED some way to patch things together because of the buffer. Right now I have no way to attach legato to either the sawtooth wave or its pitch

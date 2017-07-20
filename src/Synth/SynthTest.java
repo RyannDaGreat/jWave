@@ -11,13 +11,13 @@ public class SynthTest
 
     public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
     {
-        BasicLEDExample.activate();
+//        BasicLEDExample.activate();
         WaveCube modulin=WaveCube.modulinOscillator();
         modulin.xModInput=new Constant(.3);
         Triangle triangle=new Triangle();
         triangle.inputFrequency=new Constant(.1);
-        // LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(new LinearFunction(triangle,x->x*9-8)));
-        LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(c));
+         LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(new LinearFunction(triangle,x->x*9-8)));
+//        LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(c));
         Triangle pitchVibrato=new Triangle();
         pitchVibrato.inputFrequency=new Constant(10);
         pitchVibrato.inputAmplitude=new Constant(.004);

@@ -18,7 +18,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
     public static AudioFileFormat.Type outputFileType=AudioFileFormat.Type.WAVE;
     public static boolean mustMaintainTempo=true;//UserInput++ false ⟹ smoother sound but incorrect tempo. If set to true, it means if the buffers lag it will keep its tempo anyway, even though it means the buffers will be out of sync (and so it will sound noisy)
     public static final int SAMPLE_RATE=44100;
-    private static final int ↈbitsPerSample=16;//UserInput++ LIMITED CHOICES: You can only have either 8-bit or 16-bit audio. ↈbitsPerSample ∈ {8，16}  (8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.)
+    private static final int ↈbitsPerSample=8;//UserInput++ LIMITED CHOICES: You can only have either 8-bit or 16-bit audio. ↈbitsPerSample ∈ {8，16}  (8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.)
     public static long getCurrentↈSamples()
     {
         return currentSampleNumber;
@@ -46,6 +46,8 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                 return r.doublesTo8BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);
             case 16:
                 return r.doublesTo16BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);
+            case 32:
+                return r.doublesTo32BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);
         }
         assert false:"Only 8-bit and 16-bit audio are supported by SynthEngine, but ↈbitsPerSample == "+ↈbitsPerSample;
         return null;
