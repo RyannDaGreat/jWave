@@ -28,29 +28,29 @@ public class SynthTest
         double alpha=.25;
         HardcodedConvolutionalReverb q=new HardcodedConvolutionalReverb(blend);
         Square square=new Square();
-        square.inputFrequency=new Constant(0000);
+        square.inputFrequency=new Constant(0);
         LinearFunction gate=new LinearFunction(square,(x)->(0*x+1)/2);
         LinearModule preEcho=BilinearFunction.multiply(modulin,gate);//new BlendyEcho(q,.01,new Constant(.2));
-        LinearModule echo1=new BlendyEcho(preEcho,t/1+.04,new Constant(alpha/1));//a
-        LinearModule echo2=new BlendyEcho(preEcho,t/2+.04,new Constant(alpha/2));//b+a
-        LinearModule echo3=new BlendyEcho(preEcho,t/3+.04,new Constant(alpha/3));//c+a
-        LinearModule echo4=new BlendyEcho(preEcho,t/4+.04,new Constant(alpha/4));//b+d+a
-        LinearModule echo5=new BlendyEcho(preEcho,t/5+.04,new Constant(alpha/5));//e+a
-        LinearModule echo6=new BlendyEcho(preEcho,t/6+.04,new Constant(alpha/6));//a+c+b+f
-        LinearModule echo7=new BlendyEcho(preEcho,t/7+.04,new Constant(alpha/7));//a+g
-        LinearModule echo8=new BlendyEcho(preEcho,t/8+.04,new Constant(alpha/8));//a+g
-        LinearModule echo9=new BlendyEcho(preEcho,t/9+.04,new Constant(alpha/9));//a+g
+        LinearModule echo1 =new BlendyEcho(preEcho,t/1+.04,new Constant(alpha/1));//a
+        LinearModule echo2 =new BlendyEcho(preEcho,t/2+.04,new Constant(alpha/2));//b+a
+        LinearModule echo3 =new BlendyEcho(preEcho,t/3+.04,new Constant(alpha/3));//c+a
+        LinearModule echo4 =new BlendyEcho(preEcho,t/4+.04,new Constant(alpha/4));//b+d+a
+        LinearModule echo5 =new BlendyEcho(preEcho,t/5+.04,new Constant(alpha/5));//e+a
+        LinearModule echo6 =new BlendyEcho(preEcho,t/6+.04,new Constant(alpha/6));//a+c+b+f
+        LinearModule echo7 =new BlendyEcho(preEcho,t/7+.04,new Constant(alpha/7));//a+g
+        LinearModule echo8 =new BlendyEcho(preEcho,t/8+.04,new Constant(alpha/8));//a+g
+        LinearModule echo9 =new BlendyEcho(preEcho,t/9+.04,new Constant(alpha/9));//a+g
         LinearModule echo10=new BlendyEcho(preEcho,t/10+.04,new Constant(alpha/10));//a+g
         LinearModule echo11=new BlendyEcho(preEcho,t/11+.04,new Constant(alpha/11));//a+g
         LinearModule echo12=new BlendyEcho(preEcho,t/12+.04,new Constant(alpha/12));//a+g
         PolylinearFunction echo=new PolylinearFunction(x->x[0]+x[1]+x[2]+x[3]+x[4]+x[5]+x[6]+x[7]+x[8]+x[9]+x[10]+x[11],echo1,echo2,echo3,echo4,echo5,echo6,echo7,echo8,echo9,echo10,echo11,echo12);
-        SynthEngine.setOutputModule((new BilinearFunction(echo,preEcho,(x,y)->(x+y*.55)*.2)));
+        SynthEngine.audioModule=(new BilinearFunction(echo,preEcho,(x,y)->(x+y*.55)*.2));
 
-        // SynthEngine.setOutputModule(q);
+        // SynthEngine.setAudioModule(q);
 
         // echo2.falloffFactor=new Constant(.9);
         // LinearFunction amplify=new LinearFunction(echo,x->.2*x);
 
-        // SynthEngine.setOutputModule(TrilinearFunction.blend(echo,echo2,new Constant(.5)));
+        // SynthEngine.setAudioModule(TrilinearFunction.blend(echo,echo2,new Constant(.5)));
     }
 }

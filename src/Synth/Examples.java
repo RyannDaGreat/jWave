@@ -15,7 +15,7 @@ public class Examples
         Frequency sawFrequency=new Frequency();
         saw.inputFrequency=sawFrequency;
         SampleRate sr=new SampleRate(saw,new Frequency(800));
-        SynthEngine.setOutputModule(sr);
+        SynthEngine.audioModule=sr;
         while(true)
             sawFrequency.setPitch(-12+Math.sin(r.toc()*.25)*12+Math.sin(r.toc()*.3)*Math.sin(r.toc()*.3)*(Math.acos(Math.cos(r.toc()*50)))*.5);
     }
@@ -26,7 +26,7 @@ public class Examples
         wc.inputFrequency=new Constant(110);
         sin.inputFrequency=new LinearFunction(LinearFunction.pitchToFrequency(new GetTime()),x->x*.1-3);
         wc.xModInput=new LinearFunction(sin,x->x*x/2.4);//LinearFunction.pitchToFrequency(BilinearFunction.multiply(sin,BilinearFunction.add(sin,new Constant(-10))));
-        SynthEngine.setOutputModule(wc);
+        SynthEngine.audioModule=wc;
     }
     public static void sadLittleReverb()
     {
@@ -39,7 +39,7 @@ public class Examples
         wc2.inputFrequency=new Frequency(441);
         BilinearFunction m=BilinearFunction.multiply(wc,gate);
         ConvolutionalReverb r=ConvolutionalReverb.effector(m);
-        SynthEngine.setOutputModule(r);
+        SynthEngine.audioModule=r;
     }
     public static void wtfCrazyWithRealCuttoff()
     {
@@ -54,7 +54,7 @@ public class Examples
         // LinearFunction input=new LinearFunction(s,x->x/2+.5);
         LinearModule gate=new Portamento(wc,sin2);
         // BilinearFunction m=BilinearFunction.multiply(wc,gate);
-        SynthEngine.setOutputModule(gate);
+        SynthEngine.audioModule=gate;
     }
     public static void aThing()
     {
@@ -66,7 +66,7 @@ public class Examples
         saw.inputFrequency=LinearFunction.pitchToFrequency(new LinearFunction(sin,x->x*6-12));
         sin.inputFrequency=LinearFunction.pitchToFrequency(new LinearFunction(new GetTime(),x->x-100));
         SampleRate sr=new SampleRate(saw,BilinearFunction.add(sin.inputFrequency,new LinearFunction(saw.inputFrequency,x->x*1.3)));
-        SynthEngine.setOutputModule(sr);
+        SynthEngine.audioModule=sr;
     }
     public static void phasorTest()
     {
@@ -75,7 +75,7 @@ public class Examples
         Phasor p2=new Phasor(p,new LinearFunction(new GetTime(),x->1.565436*x+.2),new Constant(.7));
         Phasor p3=new Phasor(p2,new LinearFunction(new GetTime(),x->1.1231*x+.2),new Constant(.7));
         p3.inputFrequency=new Constant(100);
-        SynthEngine.setOutputModule(new LinearFunction(p3,x->x*.2));
+        SynthEngine.audioModule=new LinearFunction(p3,x->x*.2);
     }
     public static void prettyMajorScale()
     {
@@ -92,7 +92,7 @@ public class Examples
         Portamento lowPass=new Portamento(phasor,new Constant(1e-30));
         TrilinearFunction blend=TrilinearFunction.blend(phasor,lowPass,new Constant(.8));
         LinearFunction amplify=new LinearFunction(blend,x->1.4*x);
-        SynthEngine.setOutputModule(amplify);
+        SynthEngine.audioModule=amplify;
     }
     public static void reverbViaEcho()
     {
@@ -132,6 +132,6 @@ public class Examples
         LinearModule echo11=new BlendyEcho(preEcho,t/11+.04,new Constant(alpha/11));//a+g
         LinearModule echo12=new BlendyEcho(preEcho,t/12+.04,new Constant(alpha/12));//a+g
         PolylinearFunction echo=new PolylinearFunction(x->x[0]+x[1]+x[2]+x[3]+x[4]+x[5]+x[6]+x[7]+x[8]+x[9]+x[10]+x[11],echo1,echo2,echo3,echo4,echo5,echo6,echo7,echo8,echo9,echo10,echo11,echo12);
-        SynthEngine.setOutputModule((new BilinearFunction(echo,preEcho,(x,y)->(x+y*.5)*.1)));
+        SynthEngine.audioModule=(new BilinearFunction(echo,preEcho,(x,y)->(x+y*.5)*.1));
     }
 }

@@ -20,20 +20,16 @@ public class SynthEngine//I make the sound on the speakers. roar :}
     {
         return (double)getCurrentↈSamples()/SAMPLE_RATE;
     }
-    public static void setOutputModule(LinearModule module)
-    {
-        inputModule=module;
-    }
+    public static LinearModule audioModule=new Constant(0);
+    public static LinearModule crossFadeProportion=new Constant(1);//Should be between 0 and 1; anything outside of that range will be clamped. A bit low level; this determines how much of the bufferBytes should be cross-faded into a newly created bufferBytes after repeating when it lags (to avoid hearing a popping sound).
     private static final int bufferↈSamples=SAMPLE_RATE/43+1;//⟵Magic # i stumbled on by trial/error and 44100/1024≈43.06  // 44100⟶1024 and 441000⟶10240. Determines latency! Lower -> Faster response but glitchier audio
     private static final int ↈbitsPerSample=2*8;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
     private static final int bufferↈBytes=bufferↈSamples*ↈbitsPerSample/8;
     private static SourceDataLine line;
-    private static LinearModule inputModule=new Constant(0);
-    private static byte[] newBuffer;
-    private static byte[] oldBuffer;
-    private static byte[] buffer;
+    private static byte[] newBufferBytes;
+    private static byte[] oldBufferBytes;
+    private static byte[] bufferBytes;
     private static boolean bufferMakerIsBusy;
-    public static LinearModule crossFadeProportion=new Constant(1);
     static
     {
         try
@@ -52,9 +48,9 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                                    while(true)
                                    {
                                        bufferMakerIsBusy=true;
-                                       if(newBuffer==null)
+                                       if(newBufferBytes==null)
                                        {
-                                           newBuffer=get16BitBuffer();
+                                           newBufferBytes=get16BitBuffer();
                                        }
                                        bufferMakerIsBusy=false;
                                        try
@@ -68,48 +64,47 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                                }
                            });
                            bufferMaker.start();
-                           buffer=get16BitBuffer();
+                           bufferBytes=get16BitBuffer();
                            //noinspection SynchronizationOnLocalVariableOrMethodParameter
                            synchronized(bufferMaker)
                            {
                                //noinspection InfiniteLoopStatement
-                               //
                                while(true)
                                {
-                                   if(newBuffer!=null)//Fresh new buffer
+                                   if(newBufferBytes!=null)//Fresh new bufferBytes
                                    {
-                                       buffer=newBuffer;
-                                       newBuffer=null;
+                                       bufferBytes=newBufferBytes;
+                                       newBufferBytes=null;
                                        if(!bufferMakerIsBusy)
                                        {
                                            bufferMaker.interrupt();
                                        }
-                                       if(oldBuffer!=null)
+                                       if(oldBufferBytes!=null)
                                        {
-                                           final int crossFadeSamples=(int)crossFadeProportion.getSample()*bufferↈBytes;
-                                           for(int i=0;i<crossFadeSamples;i++)//Crossfade the oldBuffer into the buffer to make it less crackle-poppy
+                                           final int crossFadeSamples=(int)r.clamp(crossFadeProportion.getSample(),0,1)*bufferↈBytes;
+                                           for(int i=0;i<crossFadeSamples;i++)//Crossfade the oldBufferBytes into the bufferBytes to make it less crackle-poppy
                                            {
-                                               buffer[i]=(byte)(((int)buffer[i]*i+(int)oldBuffer[i]*(crossFadeSamples-i))/crossFadeSamples);
+                                               bufferBytes[i]=(byte)(((int)bufferBytes[i]*i+(int)oldBufferBytes[i]*(crossFadeSamples-i))/crossFadeSamples);
                                            }
-                                           line.write(oldBuffer,0,bufferↈBytes);
-                                           oldBuffer=null;
+                                           line.write(oldBufferBytes,0,bufferↈBytes);
+                                           oldBufferBytes=null;
                                        }
                                        else
                                        {
-                                           line.write(buffer,0,bufferↈBytes);
+                                           line.write(bufferBytes,0,bufferↈBytes);
                                        }
                                    }
-                                   else //We're lagging a bit - reuse the old buffer
+                                   else //We're lagging a bit - reuse the old bufferBytes
                                    {
                                        if(mustMaintainTempo)
                                        {
                                            currentSampleNumber+=bufferↈSamples;
-                                           oldBuffer=buffer;
+                                           oldBufferBytes=bufferBytes;
                                            if(!bufferMakerIsBusy)
                                            {
                                                bufferMaker.interrupt();
                                            }
-                                           line.write(buffer,0,bufferↈBytes);
+                                           line.write(bufferBytes,0,bufferↈBytes);
                                        }
                                    }
                                }
@@ -126,7 +121,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
         double[] buffer=new double[bufferↈSamples];
         for(int i=0;i<buffer.length;i++)
         {
-            buffer[i]=inputModule.getSample();
+            buffer[i]=audioModule.getSample();
             currentSampleNumber++;
         }
         return buffer;
@@ -163,16 +158,16 @@ public class SynthEngine//I make the sound on the speakers. roar :}
 //     {
 //         return (double)getCurrentↈSamples()/SAMPLE_RATE;
 //     }
-//     public static void setOutputModule(LinearModule module)
+//     public static void setAudioModule(LinearModule module)
 //     {
-//         inputModule=module;
+//         audioModule=module;
 //     }
 //     private static final int bufferↈSamples=SAMPLE_RATE/43+1;//⟵Magic # i stumbled on by trial/error and 44100/1024≈43.06  // 44100⟶1024 and 441000⟶10240. Determines latency! Lower -> Faster response but glitchier audio
 //     private static final int ↈbitsPerSample=2*8;//8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.
 //     private static SourceDataLine line;
-//     private static LinearModule inputModule=new Constant(0);
-//     private static byte[] newBuffer;
-//     private static byte[] buffer;
+//     private static LinearModule audioModule=new Constant(0);
+//     private static byte[] newBufferBytes;
+//     private static byte[] bufferBytes;
 //     static
 //     {
 //         try
@@ -190,9 +185,9 @@ public class SynthEngine//I make the sound on the speakers. roar :}
 //                                    //noinspection InfiniteLoopStatement
 //                                    while(true)
 //                                    {
-//                                        if(newBuffer==null)
+//                                        if(newBufferBytes==null)
 //                                        {
-//                                            newBuffer=get16BitBuffer();
+//                                            newBufferBytes=get16BitBuffer();
 //                                        }
 //                                        try
 //                                        {
@@ -205,24 +200,24 @@ public class SynthEngine//I make the sound on the speakers. roar :}
 //                                }
 //                            });
 //                            bufferMaker.start();
-//                            buffer=get16BitBuffer();
+//                            bufferBytes=get16BitBuffer();
 //                            //noinspection SynchronizationOnLocalVariableOrMethodParameter
 //                            synchronized(bufferMaker)
 //                            {
 //                                //noinspection InfiniteLoopStatement
 //                                while(true)
 //                                {
-//                                    if(newBuffer!=null)//Fresh new buffer
+//                                    if(newBufferBytes!=null)//Fresh new bufferBytes
 //                                    {
-//                                        buffer=newBuffer;
-//                                        newBuffer=null;
+//                                        bufferBytes=newBufferBytes;
+//                                        newBufferBytes=null;
 //                                    }
-//                                    else if(mustMaintainTempo)//We're lagging a bit - reuse the old buffer
+//                                    else if(mustMaintainTempo)//We're lagging a bit - reuse the old bufferBytes
 //                                    {
 //                                        currentSampleNumber+=bufferↈSamples;
 //                                    }
 //                                    bufferMaker.interrupt();
-//                                    line.write(buffer,0,bufferↈSamples*ↈbitsPerSample/8);
+//                                    line.write(bufferBytes,0,bufferↈSamples*ↈbitsPerSample/8);
 //                                }
 //                            }
 //                        }).start();
@@ -234,13 +229,13 @@ public class SynthEngine//I make the sound on the speakers. roar :}
 //     }
 //     private static double[] getDoubleBuffer()
 //     {
-//         double[] buffer=new double[bufferↈSamples];
-//         for(int i=0;i<buffer.length;i++)
+//         double[] bufferBytes=new double[bufferↈSamples];
+//         for(int i=0;i<bufferBytes.length;i++)
 //         {
-//             buffer[i]=inputModule.getSample();
+//             bufferBytes[i]=audioModule.getSample();
 //             currentSampleNumber++;
 //         }
-//         return buffer;
+//         return bufferBytes;
 //     }
 //     private static byte[] get16BitBuffer()
 //     {
