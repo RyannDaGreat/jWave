@@ -82,7 +82,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
                                        if(oldBufferBytes!=null)
                                        {
                                            final int crossFadeSamples=(int)r.clamp(crossFadeProportion.getSample(),0,1)*bufferↈBytes;
-                                           for(int i=0;i<crossFadeSamples;i++)//Crossfade the oldBufferBytes into the bufferBytes to make it less crackle-poppy
+                                           for(int i=0;i<crossFadeSamples;i++)//Cross-fade the oldBufferBytes into the bufferBytes to make it less crackle-poppy
                                            {
                                                bufferBytes[i]=(byte)(((int)bufferBytes[i]*i+(int)oldBufferBytes[i]*(crossFadeSamples-i))/crossFadeSamples);
                                            }
