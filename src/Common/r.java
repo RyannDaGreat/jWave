@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"WeakerAccess","FinalStaticMethod"})
 public class r//To be merged with the r class in the future...
 {
+
     /**
      * Created by Ryan B on 2/7/16.
      * <p>
@@ -1063,7 +1064,7 @@ public class r//To be merged with the r class in the future...
     {
         array=array.clone();
         byte temp;
-        int i=0,j=array.length;
+        int i=0, j=array.length;
         while(i<j)
         {
             temp=array[i];
@@ -1072,11 +1073,13 @@ public class r//To be merged with the r class in the future...
         }
         return array;
     }
-    public static byte[]roll(int n,byte[]array)
+    public static byte[] roll(int n,byte[] array)
     {
-        byte[]out=new byte[array.length];
+        byte[] out=new byte[array.length];
         for(int i=0;i<array.length;i++)
+        {
             out[i]=array[mod(i+n,array.length)];
+        }
         return out;
     }
     public static double[] doubleArray(int... x)
@@ -2048,7 +2051,7 @@ public class r//To be merged with the r class in the future...
         }
         return bytes.array();
     }
-    private double[][] transposeMatrix(double[][] m)
+    public static double[][] transposeMatrix(double[][] m)
     {
         double[][] temp=new double[m[0].length][m.length];
         for(int i=0;i<m.length;i++)
@@ -2060,7 +2063,7 @@ public class r//To be merged with the r class in the future...
         }
         return temp;
     }
-    private int[][] transposeMatrix(int[][] m)
+    public static int[][] transposeMatrix(int[][] m)
     {
         int[][] temp=new int[m[0].length][m.length];
         for(int i=0;i<m.length;i++)
@@ -2071,6 +2074,20 @@ public class r//To be merged with the r class in the future...
             }
         }
         return temp;
+    }
+    public static Thread startTimerThread(Runnable r,double timeIntervalInSeconds)
+    {
+        Thread thread=new Thread(()->
+                                 {
+                                     //noinspection InfiniteLoopStatement
+                                     while(true)
+                                     {
+                                         r.run();
+                                         delay(timeIntervalInSeconds);
+                                     }
+                                 });
+        thread.start();
+        return thread;
     }
     // public final static byte[]doublesTo32BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
     // {

@@ -1,4 +1,5 @@
 package Synth;
+import Arduino.BasicLEDExample;
 import Synth.LinearModules.*;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -6,16 +7,20 @@ import java.io.IOException;
 @SuppressWarnings({"WeakerAccess","Duplicates"})
 public class SynthTest
 {
+    public static Constant c=new Constant(-10);
+
     public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
     {
+        BasicLEDExample.activate();
         WaveCube modulin=WaveCube.modulinOscillator();
         modulin.xModInput=new Constant(.3);
         Triangle triangle=new Triangle();
         triangle.inputFrequency=new Constant(.1);
-        LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(new LinearFunction(triangle,x->x*9-8)));
+        // LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(new LinearFunction(triangle,x->x*9-8)));
+        LinearFunction majorScalePitchArpeggio=LinearFunction.majorNoteToPitch(LinearFunction.round(c));
         Triangle pitchVibrato=new Triangle();
         pitchVibrato.inputFrequency=new Constant(10);
-        pitchVibrato.inputAmplitude=new Constant(.4);
+        pitchVibrato.inputAmplitude=new Constant(.004);
         modulin.inputFrequency=LinearFunction.pitchToFrequency(BilinearFunction.add(new Portamento(majorScalePitchArpeggio,new Constant(.00000000000000000000001)),pitchVibrato));
         Phasor phasor=new Phasor(modulin,new GetTime(),new Constant(-.2));
         Portamento lowPass=new Portamento(phasor,new Constant(1e-30));

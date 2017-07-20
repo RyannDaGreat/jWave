@@ -43,7 +43,7 @@ public class SynthEngine//I make the sound on the speakers. roar :}
         switch(ↈbitsPerSample)
         {
             case 8:
-                return r.doublesTo8BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);/
+                return r.doublesTo8BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);
             case 16:
                 return r.doublesTo16BitAudioBytes(doubles);//8-bit audio is also available: bytes=r.doublesTo8BitAudioBytes(doubles);
         }
