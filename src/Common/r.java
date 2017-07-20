@@ -2048,6 +2048,30 @@ public class r//To be merged with the r class in the future...
         }
         return bytes.array();
     }
+    private double[][] transposeMatrix(double[][] m)
+    {
+        double[][] temp=new double[m[0].length][m.length];
+        for(int i=0;i<m.length;i++)
+        {
+            for(int j=0;j<m[0].length;j++)
+            {
+                temp[j][i]=m[i][j];
+            }
+        }
+        return temp;
+    }
+    private int[][] transposeMatrix(int[][] m)
+    {
+        int[][] temp=new int[m[0].length][m.length];
+        for(int i=0;i<m.length;i++)
+        {
+            for(int j=0;j<m[0].length;j++)
+            {
+                temp[j][i]=m[i][j];
+            }
+        }
+        return temp;
+    }
     // public final static byte[]doublesTo32BitAudioBytes(double[]monoAudio)//∀ x ∈ monoAudio，x should ∈［﹣1，1］or else it will be clipped
     // {
     //     //For my Modulin Synth attempt in Java

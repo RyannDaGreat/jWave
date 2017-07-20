@@ -1,9 +1,7 @@
 package Synth.LinearModules;
 import Common.r;
+import Synth.WaveCubestuffs;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 public class WaveCube extends Oscillator
@@ -14,64 +12,13 @@ public class WaveCube extends Oscillator
         return waveCubeSample(ↈλ,inputFrequency.getSample(),xModInput.getSample());
     }
     //region For main modulin oscillator
-    private double[][] transposeMatrix(double[][] m)
-    {
-        double[][] temp=new double[m[0].length][m.length];
-        for(int i=0;i<m.length;i++)
-        {
-            for(int j=0;j<m[0].length;j++)
-            {
-                temp[j][i]=m[i][j];
-            }
-        }
-        return temp;
-    }
-    private int[][] transposeMatrix(int[][] m)
-    {
-        int[][] temp=new int[m[0].length][m.length];
-        for(int i=0;i<m.length;i++)
-        {
-            for(int j=0;j<m[0].length;j++)
-            {
-                temp[j][i]=m[i][j];
-            }
-        }
-        return temp;
-    }
-    private double[][] loadWaveTable(String imagePath) throws IOException
-    {
-        File file=new File(imagePath);
-        BufferedImage img=ImageIO.read(file);
-        int width=img.getWidth();
-        int height=img.getHeight();
-        int[][] imgArr=new int[width][height];
-        Raster raster=img.getData();
-        for(int i=0;i<width;i++)
-        {
-            for(int j=0;j<height;j++)
-            {
-                imgArr[i][j]=raster.getSample(i,j,0);
-            }
-        }
-        imgArr=transposeMatrix(imgArr);//To match python's output
-        //Convert it to a double array of doubles ∈ [0,1]:
-        double[][] out=new double[imgArr.length][imgArr[0].length];
-        for(int i=0;i<out.length;i++)
-        {
-            for(int j=0;j<out[0].length;j++)
-            {
-                out[i][j]=Math.min(1,(imgArr[i][j]-127)/127d);
-            }
-        }
-        return out;
-    }
     private double[][][] loadWaveCube(String pngPathPrefixWithoutNumberOrExtension,int numberOfImages) throws IOException
     {
-        double[][] initTable=loadWaveTable(pngPathPrefixWithoutNumberOrExtension+0+".png");
+        double[][] initTable=WaveCubestuffs.loadWaveTable(pngPathPrefixWithoutNumberOrExtension+0+".png");
         double[][][] out=new double[numberOfImages][initTable[0].length][initTable.length];
         for(int i=0;i<numberOfImages;i++)
         {
-            out[i]=loadWaveTable(pngPathPrefixWithoutNumberOrExtension+i+".png");
+            out[i]=WaveCubestuffs.loadWaveTable(pngPathPrefixWithoutNumberOrExtension+i+".png");
         }
         return out;
     }

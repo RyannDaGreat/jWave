@@ -44,7 +44,8 @@ public class SynthTest
         LinearModule echo11=new BlendyEcho(preEcho,t/11+.04,new Constant(alpha/11));//a+g
         LinearModule echo12=new BlendyEcho(preEcho,t/12+.04,new Constant(alpha/12));//a+g
         PolylinearFunction echo=new PolylinearFunction(x->x[0]+x[1]+x[2]+x[3]+x[4]+x[5]+x[6]+x[7]+x[8]+x[9]+x[10]+x[11],echo1,echo2,echo3,echo4,echo5,echo6,echo7,echo8,echo9,echo10,echo11,echo12);
-        SynthEngine.audioModule=(new BilinearFunction(echo,preEcho,(x,y)->(x+y*.55)*.2));
+        BilinearFunction bilinearFunction=new BilinearFunction(echo,preEcho,(x,y)->(x+y*.55)*.8);
+        SynthEngine.audioModule=bilinearFunction;
 
         // SynthEngine.setAudioModule(q);
 

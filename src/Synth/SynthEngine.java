@@ -9,15 +9,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 //Features: 16 bit OR 8-bit mono sound (you can easily switch between the two!), Multithreaded buffering (so less clicks and pops if too much lag) and maintaining tempo (regardless of lag), custom samplerate, modular input, automatic buffer size minimization calculation given any samplerate (so the user controls from the Arduino can change notes really really fast etc)
+//POSSIBLY: Remove crossfade because it seems to be useless
 public class SynthEngine//I make the sound on the speakers. roar :}
 {
     public static LinearModule audioModule=new Constant(0);
-    public static LinearModule crossFadeProportion=new Constant(1);//Should be between 0 and 1; anything outside of that range will be clamped. A bit low level; this determines how much of the bufferBytes should be cross-faded into a newly created bufferBytes after repeating when it lags (to avoid hearing a popping sound).
-    public static boolean mustMaintainTempo=true;//UserInput++ false ⟹ smoother sound but incorrect tempo. If set to true, it means if the buffers lag it will keep its tempo anyway, even though it means the buffers will be out of sync (and so it will sound noisy)
+    public static LinearModule crossFadeProportion=new Constant(1);//<-- Can't tell the difference whether it's 0 or 1. Should be between 0 and 1; anything outside of that range will be clamped. A bit low level; this determines how much of the bufferBytes should be cross-faded into a newly created bufferBytes after repeating when it lags (to avoid hearing a popping sound).
+    public static String outputFilePath="/Users/Ryan/Desktop/test.wav";//Set to null if you don't want to save any files. The file will be saved as you exit the java program via a shutdown hook.
     public static AudioFileFormat.Type outputFileType=AudioFileFormat.Type.WAVE;
+    public static boolean mustMaintainTempo=true;//UserInput++ false ⟹ smoother sound but incorrect tempo. If set to true, it means if the buffers lag it will keep its tempo anyway, even though it means the buffers will be out of sync (and so it will sound noisy)
     public static final int SAMPLE_RATE=44100;
     private static final int ↈbitsPerSample=16;//UserInput++ LIMITED CHOICES: You can only have either 8-bit or 16-bit audio. ↈbitsPerSample ∈ {8，16}  (8⟷Byte，16⟷Short，32⟷Int. It appears that, for some reason, trying to use 32 bit causes some audio error. I don't know why.)
-    public static final String outputFilePath="/Users/Ryan/Desktop/test.wav";//Set to null if you don't want to save any files. The file will be saved as you exit the java program via a shutdown hook.
     public static long getCurrentↈSamples()
     {
         return currentSampleNumber;

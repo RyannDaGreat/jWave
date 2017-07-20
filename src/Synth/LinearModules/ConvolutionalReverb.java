@@ -1,4 +1,6 @@
 package Synth.LinearModules;
+import Synth.WaveCubestuffs;
+
 import java.io.IOException;
 public class ConvolutionalReverb extends Filter
 {

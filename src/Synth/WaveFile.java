@@ -1,4 +1,4 @@
-package Synth.LinearModules;
+package Synth;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package Synth.LinearModules;
+package Synth;
 import Common.r;
 
 import javax.imageio.ImageIO;
@@ -20,9 +20,9 @@ public class WaveCubestuffs
         // System.out.println(java.util.Arrays.deepToString(doubles));
     }
     //region For reverb effect
-    public static double[][]waveTable(String filePathPrefix,int numberOfWaves) throws IOException, UnsupportedAudioFileException
+    public static double[][] waveTable(String filePathPrefix,int numberOfWaves) throws IOException, UnsupportedAudioFileException
     {
-        double[][]out=new double[numberOfWaves][];
+        double[][] out=new double[numberOfWaves][];
         for(int i=0;i<numberOfWaves;i++)
         {
             out[i]=new WaveFile(new File(filePathPrefix+numberOfWaves+".wav")).asDoubleArray();
@@ -30,7 +30,7 @@ public class WaveCubestuffs
         return out;
     }
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public static double interpolateWaveTable(double[][]waveTable,double x,double y)//x and y ∈ [0,1)
+    public static double interpolateWaveTable(double[][] waveTable,double x,double y)//x and y ∈ [0,1)
     {
         int xl=waveTable.length;
         int yl=waveTable[0].length;
@@ -81,6 +81,31 @@ public class WaveCubestuffs
             {
                 out[i][j]=Math.min(1,(imgArr[i][j]-127)/127d);
             }
+        }
+        // Normalizing values along the out[:][] axis: Total sum should == 0
+        // System.out.println(out[0].length);
+        // System.out.println(out.length);
+        // System.out.println(out[131][999]);
+        for(int i=0;i<out.length;i++)
+        {
+            // System.out.println("CHUBBY");
+            double total=0;
+            int length=out[0].length;
+            for(int j=0;j<length;j++)
+            {
+                total+=out[i][j];
+            }
+            // System.out.println("total="+total);
+            for(int j=0;j<length;j++)
+            {
+                out[i][j]-=total/length;
+            }
+            // total=0;
+            // for(int j=0;j<length;j++)
+            // {
+            //     total+=out[i][j];
+            // }
+            // System.out.println("total="+total);
         }
         return out;
     }
