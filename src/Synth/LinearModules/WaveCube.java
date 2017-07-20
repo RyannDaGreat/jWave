@@ -110,7 +110,7 @@ public class WaveCube extends Oscillator
         final double z0α=1-z1α;//≣z-fz ⟵ Setting it to this caused problems: when cz==fz ∴ z==fz&&z==cz ∴ z-fz==0&&z-cz==0
         final double pxyz=pxy1*z1α+pxy0*z0α;
         //
-        return pxyz;//Must take into account the cyclic nature of the wave and take into account what happens when the non-cyclic dimensions are out of bounds!
+        return pxyz;//Must take into account the cyclic nature of the outputFileType and take into account what happens when the non-cyclic dimensions are out of bounds!
     }
     private double waveCubeSample(double λ,double f,double x)//f≣frequency, x≣the x-value in harmor. 0≤λ<1 ⋀ f>0 ⋀ 0≤x≤1. -1≤output≤1
     {
@@ -130,9 +130,9 @@ public class WaveCube extends Oscillator
         this.xModInput=xModInput;
         try
         {
-            System.out.println("Loading wave cube "+wavetablePrefix+"...");
+            System.out.println("Loading outputFileType cube "+wavetablePrefix+"...");
             waveCube=loadWaveCube(new File("").getAbsolutePath()+"/"+wavetablePrefix,ↈwavetables);
-            System.out.println("Successfully loaded the wave cube!");
+            System.out.println("Successfully loaded the outputFileType cube!");
             xl=waveCube.length;
             yl=waveCube[0].length;
             zl=waveCube[0][0].length;
@@ -143,7 +143,7 @@ public class WaveCube extends Oscillator
         catch(IOException e)
         {
             e.printStackTrace();
-            System.out.println("WARNING: Failed to load the wave cube!");
+            System.out.println("WARNING: Failed to load the outputFileType cube!");
         }
     }
     public static WaveCube modulinOscillator()

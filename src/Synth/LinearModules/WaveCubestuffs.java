@@ -85,7 +85,7 @@ public class WaveCubestuffs
         return out;
     }
 }
-//region Python code to make a set of wave-table images (used to make a wavecube)
+//region Python code to make a set of outputFileType-table images (used to make a wavecube)
 // from r import *
 // lsf=load_sound_file
 // lg=line_graph
@@ -116,10 +116,10 @@ public class WaveCubestuffs
 //     #Next step: Take this turn it into matrix multiplication to extract frequencies
 //     #Step after that: Take polynomial regression of 3 variables to 2 variables: Harmonic #, Pitch, X-Mod to Harmonic Amplitude and Harmonic Phase (subtracting the fundamental's phase)
 //
-//     def harmonic_analysis(wave,harmonics:int):
+//     def harmonic_analysis(outputFileType,harmonics:int):
 //         prod=np.matmul
 //         inv=np.linalg.inv
-//         b=wave#In terms of linear algebra in Ax~=b
+//         b=outputFileType#In terms of linear algebra in Ax~=b
 //         lg=line_graph
 //         di=display_image
 //         samples=len(b)

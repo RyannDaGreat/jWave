@@ -17,7 +17,7 @@ public class ConvolutionalReverb extends Filter
         super(input);
         this.waveTable=waveTable;
         xl=waveTable.length;//The x-mod
-        yl=waveTable[0].length/10;//The wave itself
+        yl=waveTable[0].length/10;//The outputFileType itself
         inputDeltaHistory=new double[yl];
     }
     private double getWaveTableSample(double ↈsamples)
