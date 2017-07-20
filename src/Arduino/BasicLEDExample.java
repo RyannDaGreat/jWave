@@ -1,9 +1,8 @@
 package Arduino;
+import com.fazecast.jSerialComm.SerialPort;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import Arduino.Arduino;
-import com.fazecast.jSerialComm.SerialPort;
 public class BasicLEDExample
 {
     public static void main(String[] args) throws IOException

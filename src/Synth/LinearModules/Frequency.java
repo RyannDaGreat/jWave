@@ -11,11 +11,11 @@ public class Frequency extends Constant
     }
     public void setFrequency(double frequency)
     {
-        setValue(frequency);
+        value=frequency;
     }
     public double getFrequency()
     {
-        return getValue();
+        return value;
     }
     private static final double centerFrequency=440;//Frequency when pitch is 0
     public void setPitch(double ↈsemitones)
