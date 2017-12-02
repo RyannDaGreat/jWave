@@ -1,3 +1,3 @@
 # jWave
 A real-time modular synthesizer built for Java! 
-[![Watch the video](https://imgur.com/a/WR53u)](https://youtu.be/UBlQQ3G8nWQ)
+[![Watch the video](https://i.imgur.com/J2ClTFD.png)](https://youtu.be/UBlQQ3G8nWQ)
